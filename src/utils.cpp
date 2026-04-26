@@ -15,7 +15,10 @@ http::response<http::string_body> handle_request(const http::request<http::strin
   if (req.method() == http::verb::get) {
     if (req.target() == "/") {
       res.result(http::status::ok);
-      res.body() = "<h1 style=\"text-align: center;\">CSCE 1102</h1>";
+      res.body() = file_contents("static/index.html");
+    } else if(req.target() == "/greida"){
+      res.result(http::status::ok);
+      res.body() = file_contents("static/greida.html");
     } else {
       res.result(http::status::not_found);
       res.body() = "<h1 style=\"text-align: center;\">404 Not Found</h1>";
@@ -28,4 +31,17 @@ http::response<http::string_body> handle_request(const http::request<http::strin
 
   res.prepare_payload();
   return res;
+}
+std::string file_contents(std::string filepath){
+  std::ifstream file(filepath);
+  if(!file){
+    std::cout << "File not found\n";
+    return "";
+  }else{
+    std::string line, contents= "";
+    while(std::getline(file, line)){
+      contents += line + '\n';
+    }
+    return contents;
+  }
 }
